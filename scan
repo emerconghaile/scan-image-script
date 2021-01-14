@@ -16,6 +16,11 @@ do
     then
       format_bool=true
       printf "Saving scan as .$format_scan%b\n\n"
+    elif [ -z "$format_scan" ]
+    then
+      format_scan="${format_array[0]}"
+      format_bool=true
+      printf "Saving scan as .$format_scan%b\n\n"
     else
       printf "Invalid format%b\n"
     fi
@@ -32,22 +37,32 @@ do
     then
       mode_bool=true
       printf "Scanning in $mode_scan mode%b\n\n"
+    elif [ -z "$mode_scan" ]
+    then
+      mode_scan="${mode_array[0]}"
+      mode_bool=true
+      printf "Scanning in $mode_scan%b\n\n"
     else
       printf "Invalid mode%b\n"
     fi
 done
 
 # user selects the resolution parameter
-resolution_bool=false
-resolution_array=("75" "100" "200" "300" "600" "1200")
-printf "What dpi resolution? (${resolution_array[*]})%b\n"
-while [ $resolution_bool = false ]
+res_bool=false
+res_array=("75" "100" "200" "300" "600" "1200")
+printf "What dpi resolution? (${res_array[*]})%b\n"
+while [ $res_bool = false ]
 do
-  read resolution_scan
-    if [[ " ${resolution_array[@]} " =~ " $resolution_scan " ]]
+  read res_scan
+    if [[ " ${res_array[@]} " =~ " $res_scan " ]]
     then
-      resolution_bool=true
-      printf "Scanning at $resolution_scan dpi%b\n\n"
+      res_bool=true
+      printf "Scanning at $res_scan dpi%b\n\n"
+    elif [ -z "$res_scan" ]
+    then
+      res_scan="${res_array[0]}"
+      res_bool=true
+      printf "Scanning at $res_scan dpi%b\n\n"
     else
       printf "Invalid resolution%b\n"
     fi
@@ -63,7 +78,12 @@ do
     if [[ " ${source_array[@]} " =~ " $source_scan " ]]
     then
       source_bool=true
-      printf "Scanning from the $source_scan%b\n\n"
+      printf "Scanning from $source_scan%b\n\n"
+    elif [ -z "$source_scan" ]
+    then
+      source_scan="${source_array[0]}"
+      source_bool=true
+      printf "Scanning from $source_scan%b\n\n"
     else
       printf "Invalid source%b\n"
     fi
@@ -71,12 +91,23 @@ done
 
 # user defines the path to save scan
 printf "Where to save?%b\n"
-read print_destination
-eval print_destination=$print_destination
-printf "Saving scan to $print_destination.$format_scan%b\n\n"
+dest_bool=false
+while [ $dest_bool = false ]
+do
+  read dest_scan
+  eval dest_scan=$dest_scan
+  if [ ! -z "$dest_scan" ]
+  then
+    dest_bool=true
+    printf "Saving scan to $dest_scan.$format_scan%b\n\n"
+  elif [ -z "$dest_scan" ]
+  then
+    printf "Must define a save path!%b\n"
+  fi
+done
 
 # run scanimage with user defined parameters
-scanimage -v -d escl:http://192.168.1.138:8080 --format="$format_scan" --mode "$mode_scan" --resolution "$resolution_scan" --source "$source_scan" > "$print_destination"
+scanimage -v -d escl:http://192.168.1.138:8080 --format="$format_scan" --mode "$mode_scan" --resolution "$res_scan" --source "$source_scan" > "$dest_scan"
 
 # add scan success confirmation
 # if file exists, then success

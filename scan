@@ -94,7 +94,7 @@ printf "Where to save?%b\n"
 dest_bool=false
 while [ $dest_bool = false ]
 do
-  read dest_scan
+  read -e dest_scan
   eval dest_scan=$dest_scan
   if [ ! -z "$dest_scan" ]
   then

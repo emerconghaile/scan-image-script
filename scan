@@ -15,12 +15,12 @@ do
     if [[ " ${format_array[@]} " =~ " $format_scan " ]]
     then
       format_bool=true
-      printf "Saving scan as .$format_scan%b\n\n"
+      printf ".$format_scan selected%b\n\n"
     elif [ -z "$format_scan" ]
     then
       format_scan="${format_array[0]}"
       format_bool=true
-      printf "Saving scan as .$format_scan%b\n\n"
+      printf ".$format_scan selected%b\n\n"
     else
       printf "Invalid format%b\n"
     fi
@@ -36,12 +36,12 @@ do
     if [[ " ${mode_array[@]} " =~ " $mode_scan " ]]
     then
       mode_bool=true
-      printf "Scanning in $mode_scan mode%b\n\n"
+      printf "$mode_scan selected%b\n\n"
     elif [ -z "$mode_scan" ]
     then
       mode_scan="${mode_array[0]}"
       mode_bool=true
-      printf "Scanning in $mode_scan%b\n\n"
+      printf "$mode_scan selected%b\n\n"
     else
       printf "Invalid mode%b\n"
     fi
@@ -57,12 +57,12 @@ do
     if [[ " ${res_array[@]} " =~ " $res_scan " ]]
     then
       res_bool=true
-      printf "Scanning at $res_scan dpi%b\n\n"
+      printf "$res_scan selected%b\n\n"
     elif [ -z "$res_scan" ]
     then
       res_scan="${res_array[0]}"
       res_bool=true
-      printf "Scanning at $res_scan dpi%b\n\n"
+      printf "$res_scan selected%b\n\n"
     else
       printf "Invalid resolution%b\n"
     fi
@@ -78,12 +78,12 @@ do
     if [[ " ${source_array[@]} " =~ " $source_scan " ]]
     then
       source_bool=true
-      printf "Scanning from $source_scan%b\n\n"
+      printf "$source_scan selected%b\n\n"
     elif [ -z "$source_scan" ]
     then
       source_scan="${source_array[0]}"
       source_bool=true
-      printf "Scanning from $source_scan%b\n\n"
+      printf "$source_scan selected%b\n\n"
     else
       printf "Invalid source%b\n"
     fi
@@ -99,10 +99,10 @@ do
   if [ ! -z "$dest_scan" ]
   then
     dest_bool=true
-    printf "Saving scan to $dest_scan.$format_scan%b\n\n"
+    printf "Saving to $dest_scan.$format_scan%b\n\n"
   elif [ -z "$dest_scan" ]
   then
-    printf "Must define a save path%b\n"
+    printf "Must define save path%b\n"
   fi
 done
 

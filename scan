@@ -7,7 +7,7 @@ printf "Scan parameters required (leave blank for 1st param):%b\n\n"
 
 # user selects the format parameter
 format_bool=false
-format_array=("pnm" "tiff" "png" "jpeg")
+format_array=(".pnm" ".tiff" ".png" ".jpeg")
 printf "Which format? (${format_array[*]})%b\n"
 while [ $format_bool = false ]
 do
@@ -15,12 +15,12 @@ do
     if [[ " ${format_array[@]} " =~ " $format_scan " ]]
     then
       format_bool=true
-      printf ".$format_scan selected%b\n\n"
+      printf "$format_scan selected%b\n\n"
     elif [ -z "$format_scan" ]
     then
       format_scan="${format_array[0]}"
       format_bool=true
-      printf ".$format_scan selected%b\n\n"
+      printf "$format_scan selected%b\n\n"
     else
       printf "Invalid format%b\n"
     fi
@@ -99,7 +99,7 @@ do
   if [ ! -z "$dest_scan" ]
   then
     dest_bool=true
-    printf "Saving to $dest_scan.$format_scan%b\n\n"
+    printf "Saving to $dest_scan$format_scan%b\n\n"
   elif [ -z "$dest_scan" ]
   then
     printf "Must define save path%b\n"
@@ -107,10 +107,10 @@ do
 done
 
 # run scanimage with user defined parameters
-scanimage -v -d escl:http://192.168.1.138:8080 --format="$format_scan" --mode "$mode_scan" --resolution "$res_scan" --source "$source_scan" > "$dest_scan.$format_scan"
+scanimage -v -d escl:http://192.168.1.138:8080 --format="${format_scan:1}" --mode "$mode_scan" --resolution "$res_scan" --source "$source_scan" > "$dest_scan$format_scan"
 
 # scan success confirmation
-if [ -f "$dest_scan.$format_scan" ]
+if [ -f "$dest_scan$format_scan" ]
 then
   printf "%b\nScan success!%b\n"
 else

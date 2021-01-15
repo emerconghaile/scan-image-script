@@ -50,7 +50,7 @@ done
 # user selects the resolution parameter
 res_bool=false
 res_array=("75" "100" "200" "300" "600" "1200")
-printf "What dpi resolution? (${res_array[*]})%b\n"
+printf "Which resolution? (${res_array[*]})%b\n"
 while [ $res_bool = false ]
 do
   read res_scan

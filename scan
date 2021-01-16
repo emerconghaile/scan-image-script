@@ -1,115 +1,72 @@
 #!/bin/bash
 # script to take user parameter input and scan documents
 
+# function for user parameter selection
+# $1 is param name | $@ is param array
+param_select () {
+  local param_name="$1"
+  shift
+  local param_array=("$@")
+  local param_bool=false
+  local user_select
+  printf "Which $param_name? (${param_array[*]})%b\n"
+  while [ $param_bool = false ] ; do
+    read user_select
+    if [[ " ${param_array[@]} " =~ " $user_select " ]] ; then
+      param_bool=true
+      printf "$user_select selected%b\n\n"
+    elif [ -z "$user_select" ] ; then
+      param_bool=true
+      user_select="${param_array[0]}"
+      printf "$user_select selected%b\n\n"
+    else
+      printf "Invalid format %b\n"
+    fi
+  done
+  eval "$param_name"_scan="$user_select"
+}
+
 printf "Scan parameters required (leave blank for 1st param):%b\n\n"
 
-# user selects the format parameter
-format_bool=false
-format_array=(".pnm" ".tiff" ".png" ".jpeg")
-printf "Which format? (${format_array[*]})%b\n"
-while [ $format_bool = false ]
-do
-  read format_scan
-    if [[ " ${format_array[@]} " =~ " $format_scan " ]]
-    then
-      format_bool=true
-      printf "$format_scan selected%b\n\n"
-    elif [ -z "$format_scan" ]
-    then
-      format_scan="${format_array[0]}"
-      format_bool=true
-      printf "$format_scan selected%b\n\n"
-    else
-      printf "Invalid format%b\n"
-    fi
-done
+# user selects the format
+name=format
+array=(".pnm" ".tiff" ".png" ".jpeg")
+param_select $name ${array[*]}
 
-# user selects the mode parameter
-mode_bool=false
-mode_array=("gray" "color")
-printf "Which mode? (${mode_array[*]})%b\n"
-while [ $mode_bool = false ]
-do
-  read mode_scan
-    if [[ " ${mode_array[@]} " =~ " $mode_scan " ]]
-    then
-      mode_bool=true
-      printf "$mode_scan selected%b\n\n"
-    elif [ -z "$mode_scan" ]
-    then
-      mode_scan="${mode_array[0]}"
-      mode_bool=true
-      printf "$mode_scan selected%b\n\n"
-    else
-      printf "Invalid mode%b\n"
-    fi
-done
+# user selects the mode
+name=mode
+array=("gray" "color")
+param_select $name ${array[*]}
 
-# user selects the resolution parameter
-res_bool=false
-res_array=("75" "100" "200" "300" "600" "1200")
-printf "Which resolution? (${res_array[*]})%b\n"
-while [ $res_bool = false ]
-do
-  read res_scan
-    if [[ " ${res_array[@]} " =~ " $res_scan " ]]
-    then
-      res_bool=true
-      printf "$res_scan selected%b\n\n"
-    elif [ -z "$res_scan" ]
-    then
-      res_scan="${res_array[0]}"
-      res_bool=true
-      printf "$res_scan selected%b\n\n"
-    else
-      printf "Invalid resolution%b\n"
-    fi
-done
+# user selects the resolution
+name=resolution
+array=("75" "100" "200" "300" "600" "1200")
+param_select $name ${array[*]}
 
-# user selects the printer scanner source parameter
-source_bool=false
-source_array=("Flatbed" "ADF")
-printf "Which source? (${source_array[*]})%b\n"
-while [ $source_bool = false ]
-do
-  read source_scan
-    if [[ " ${source_array[@]} " =~ " $source_scan " ]]
-    then
-      source_bool=true
-      printf "$source_scan selected%b\n\n"
-    elif [ -z "$source_scan" ]
-    then
-      source_scan="${source_array[0]}"
-      source_bool=true
-      printf "$source_scan selected%b\n\n"
-    else
-      printf "Invalid source%b\n"
-    fi
-done
+#user selects the source
+name=source
+array=("Flatbed" "ADF")
+param_select $name ${array[*]}
 
 # user defines the path to save scan
 printf "Where to save?%b\n"
 dest_bool=false
-while [ $dest_bool = false ]
-do
+while [ $dest_bool = false ] ; do
   read -e dest_scan
   eval dest_scan=$dest_scan
-  if [ ! -z "$dest_scan" ]
-  then
+  if [ ! -z "$dest_scan" ] ; then
     dest_bool=true
     printf "Saving to $dest_scan$format_scan%b\n\n"
-  elif [ -z "$dest_scan" ]
-  then
+  elif [ -z "$dest_scan" ] ; then
     printf "Must define save path%b\n"
   fi
 done
 
 # run scanimage with user defined parameters
-scanimage -v -d escl:http://192.168.1.138:8080 --format="${format_scan:1}" --mode "$mode_scan" --resolution "$res_scan" --source "$source_scan" > "$dest_scan$format_scan"
+scanimage -v -d escl:http://192.168.1.138:8080 --format="${format_scan:1}" --mode "$mode_scan" --resolution "$resolution_scan" --source "$source_scan" > "$dest_scan$format_scan"
 
 # scan success confirmation
-if [ -f "$dest_scan$format_scan" ]
-then
+if [ -f "$dest_scan$format_scan" ] ; then
   printf "%b\nScan success!%b\n"
 else
   printf "Something went wrong!%b\n"

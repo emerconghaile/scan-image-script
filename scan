@@ -1,7 +1,5 @@
 #!/bin/bash
 # script to take user parameter input and scan documents
-# add if blank, then remove parameter option
-# add function to scan for availabile printers, return as numbered list, and ask for number
 
 printf "Scan parameters required (leave blank for 1st param):%b\n\n"
 
